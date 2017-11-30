@@ -1,0 +1,2 @@
+rm -fR ~/rpmbuild/
+
