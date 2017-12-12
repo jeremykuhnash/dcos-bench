@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+
+export BENCH_TOOLS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export CCM_PEM=$(ls -latr1 ~/Downloads/jkuhnash-* | tail -1)
+echo "PEM file: ${CCM_PEM}"
+chmod 600 $CCM_PEM   # this fixes keys that are downloaded from CCM
+killall ssh-agent
+ssh-agent
+ssh-add $CCM_PEM
+rm -fR ~/.dcos/clusters/
+if [ -z "$CCM_USER" ] || [ -z "$CCM_PASSWORD" ]; then
+    echo "Please set both CCM_USER and CCM_PASSWORD in your environment using export or set."
+    exit 1
+fi
+dcos cluster setup $1 --insecure  --username=${CCM_USER} --password=${CCM_PASSWORD}
+export PUBLIC_AGENT="$(${BENCH_TOOLS_DIR}/get_public_ip.sh)"
+echo "Public Agent: $PUBLIC_AGENT"
+#dcos node ssh --master-proxy --leader
