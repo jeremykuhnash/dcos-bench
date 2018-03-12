@@ -1,0 +1,76 @@
+{
+  "volumes": null,
+  "id": "/test/tracer-external-trace2-test",
+  "cmd": null,
+  "args": null,
+  "user": null,
+  "env": null,
+  "instances": 2,
+  "cpus": 0.1,
+  "mem": 65,
+  "disk": 0,
+  "gpus": 0,
+  "executor": null,
+  "constraints": [
+    [
+      "hostname",
+      "UNIQUE"
+    ]
+  ],
+  "fetch": null,
+  "storeUrls": null,
+  "backoffSeconds": 1,
+  "backoffFactor": 1.15,
+  "maxLaunchDelaySeconds": 3600,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "jeremykuhnash/tracer:v9",
+      "forcePullImage": true,
+      "privileged": false,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp",
+          "servicePort": 10010
+        }
+      ],
+      "network": "BRIDGE"
+    }
+  },
+  "healthChecks": [
+    {
+      "protocol": "HTTP",
+      "path": "/",
+      "gracePeriodSeconds": 10,
+      "intervalSeconds": 2,
+      "timeoutSeconds": 10,
+      "maxConsecutiveFailures": 10,
+      "ignoreHttp1xx": false
+    }
+  ],
+  "readinessChecks": null,
+  "dependencies": null,
+  "upgradeStrategy": {
+    "minimumHealthCapacity": 1,
+    "maximumOverCapacity": 1
+  },
+  "labels": {
+    "HAPROXY_GROUP": "external",
+    "HAPROXY_0_PATH": "/trace2",
+    "HAPROXY_0_PORT" : "10200",
+    "HAPROXY_0_HTTP_BACKEND_PROXYPASS_PATH": "/"
+  },
+  "acceptedResourceRoles": null,
+  "residency": null,
+  "secrets": null,
+  "taskKillGracePeriodSeconds": null,
+  "portDefinitions": [
+    {
+      "port": 10010,
+      "protocol": "tcp",
+      "labels": {}
+    }
+  ],
+  "requirePorts": false
+}

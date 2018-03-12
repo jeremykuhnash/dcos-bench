@@ -1,0 +1,77 @@
+{
+  "id": "/mysql",
+  "instances": 1,
+  "cpus": 0.5,
+  "mem": 1024,
+  "disk": 0,
+  "gpus": 0,
+  "backoffSeconds": 1,
+  "backoffFactor": 1.15,
+  "maxLaunchDelaySeconds": 3600,
+  "container": {
+    "type": "DOCKER",
+    "volumes": [
+      {
+        "containerPath": "/var/lib/mysql/",
+        "hostPath": "/tmp/mysql",
+        "mode": "RW"
+      }
+    ],
+    "docker": {
+      "image": "mysql:5.7.12",
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 3306,
+          "hostPort": 0,
+          "servicePort": 10000,
+          "protocol": "tcp",
+          "name": "mysql",
+          "labels": {
+            "VIP_0": "/mysql:3306"
+          }
+        }
+      ],
+      "privileged": false,
+      "forcePullImage": false
+    }
+  },
+  "healthChecks": [
+    {
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "portIndex": 0,
+      "protocol": "TCP"
+    }
+  ],
+  "upgradeStrategy": {
+    "minimumHealthCapacity": 0,
+    "maximumOverCapacity": 0
+  },
+  "unreachableStrategy": {
+    "inactiveAfterSeconds": 300,
+    "expungeAfterSeconds": 600
+  },
+  "killSelection": "YOUNGEST_FIRST",
+  "requirePorts": true,
+  "labels": {
+    "DCOS_PACKAGE_RELEASE": "5",
+    "DCOS_PACKAGE_SOURCE": "https://universe.mesosphere.com/repo",
+    "DCOS_PACKAGE_METADATA": "eyJwYWNrYWdpbmdWZXJzaW9uIjoiMy4wIiwibmFtZSI6Im15c3FsIiwidmVyc2lvbiI6IjUuNy4xMi0wLjMiLCJtYWludGFpbmVyIjoiaHR0cHM6Ly9kY29zLmlvL2NvbW11bml0eS8iLCJkZXNjcmlwdGlvbiI6Ik15U1FMIGlzIHRoZSB3b3JsZCdzIG1vc3QgcG9wdWxhciBvcGVuIHNvdXJjZSBkYXRhYmFzZS4gV2l0aCBpdHMgcHJvdmVuIHBlcmZvcm1hbmNlLCByZWxpYWJpbGl0eSBhbmQgZWFzZS1vZi11c2UsIE15U1FMIGhhcyBiZWNvbWUgdGhlIGxlYWRpbmcgZGF0YWJhc2UgY2hvaWNlIGZvciB3ZWItYmFzZWQgYXBwbGljYXRpb25zLCBjb3ZlcmluZyB0aGUgZW50aXJlIHJhbmdlIGZyb20gcGVyc29uYWwgcHJvamVjdHMgYW5kIHdlYnNpdGVzLCB2aWEgZS1jb21tZXJjZSBhbmQgaW5mb3JtYXRpb24gc2VydmljZXMsIGFsbCB0aGUgd2F5IHRvIGhpZ2ggcHJvZmlsZSB3ZWIgcHJvcGVydGllcyBpbmNsdWRpbmcgRmFjZWJvb2ssIFR3aXR0ZXIsIFlvdVR1YmUsIFlhaG9vISBhbmQgbWFueSBtb3JlLiIsInRhZ3MiOlsiZGF0YWJhc2UiLCJteXNxbCIsInNxbCJdLCJzZWxlY3RlZCI6ZmFsc2UsInNjbSI6Imh0dHBzOi8vZ2l0aHViLmNvbS9teXNxbC9teXNxbC1zZXJ2ZXIuZ2l0Iiwid2Vic2l0ZSI6Imh0dHBzOi8vbXlzcWwtY2kub3JnIiwiZnJhbWV3b3JrIjpmYWxzZSwicHJlSW5zdGFsbE5vdGVzIjoiVGhpcyBEQy9PUyBTZXJ2aWNlIGlzIGN1cnJlbnRseSBpbiBwcmV2aWV3LiBUaGVyZSBtYXkgYmUgYnVncywgaW5jb21wbGV0ZSBmZWF0dXJlcywgaW5jb3JyZWN0IGRvY3VtZW50YXRpb24sIG9yIG90aGVyIGRpc2NyZXBhbmNpZXMuXG5cbmBgYEFkdmFuY2VkIEluc3RhbGxhdGlvbiBvcHRpb25zIG5vdGVzYGBgXG5cbnN0b3JhZ2UgLyAqcGVyc2lzdGVuY2UqOiBjcmVhdGUgbG9jYWwgcGVyc2lzdGVudCB2b2x1bWVzIGZvciBpbnRlcm5hbCBzdG9yYWdlIGZpbGVzIHRvIHN1cnZpdmUgYWNyb3NzIHJlc3RhcnRzIG9yIGZhaWx1cmVzLlxuXG5zdG9yYWdlIC8gcGVyc2lzdGVuY2UgLyAqZXh0ZXJuYWwqOiBjcmVhdGUgZXh0ZXJuYWwgcGVyc2lzdGVudCB2b2x1bWVzLiBUaGlzIGFsbG93cyB0byB1c2UgYW4gZXh0ZXJuYWwgc3RvcmFnZSBzeXN0ZW0gc3VjaCBhcyBBbWF6b24gRUJTLCBPcGVuU3RhY2sgQ2luZGVyLCBFTUMgSXNpbG9uLCBFTUMgU2NhbGVJTywgRU1DIFh0cmVtSU8sIEVNQyBWTUFYIGFuZCBHb29nbGUgQ29tcHV0ZSBFbmdpbmUgcGVyc2lzdGVudCBzdG9yYWdlLiAqTk9URSo6IFRvIHVzZSBleHRlcm5hbCB2b2x1bWVzIHdpdGggREMvT1MsIHlvdSBNVVNUIGVuYWJsZSB0aGVtIGR1cmluZyBDTEkgb3IgQWR2YW5jZWQgaW5zdGFsbGF0aW9uLlxuXG5zdG9yYWdlIC8gKmhvc3Rfdm9sdW1lKjogIGlmIHBlcnNpc3RlbmNlIGlzIG5vdCBzZWxlY3RlZCwgdGhpcyBwYWNrYWdlIGNhbiB1c2UgYSBsb2NhbCB2b2x1bWUgaW4gdGhlIGhvc3QgZm9yIHN0b3JhZ2UsIGxpa2UgYSBsb2NhbCBkaXJlY3Rvcnkgb3IgYW4gTkZTIG1vdW50LiBUaGUgcGFyYW1ldGVyICpob3N0X3ZvbHVtZSogY29udHJvbHMgdGhlIHBhdGggaW4gdGhlIGhvc3QgaW4gd2hpY2ggdGhlc2Ugdm9sdW1lcyB3aWxsIGJlIGNyZWF0ZWQsIHdoaWNoIE1VU1QgYmUgdGhlIHNhbWUgb24gYWxsIG5vZGVzIG9mIHRoZSBjbHVzdGVyLlxuXG5OT1RFOiBJZiB5b3UgZGlkbid0IHNlbGVjdCBwZXJzaXN0ZW5jZSBpbiB0aGUgc3RvcmFnZSBzZWN0aW9uLCBvciBwcm92aWRlZCBhIHZhbGlkIHZhbHVlIGZvciAqaG9zdF92b2x1bWUqIG9uIGluc3RhbGxhdGlvbixcbllPVVIgREFUQSBXSUxMIE5PVCBCRSBTQVZFRCBJTiBBTlkgV0FZLlxuXG5uZXR3b3JraW5nIC8gKnBvcnQqOiBUaGlzIERDL09TIHNlcnZpY2UgY2FuIGJlIGFjY2Vzc2VkIGZyb20gYW55IG90aGVyIGFwcGxpY2F0aW9uIHRocm91Z2ggYSBOQU1FRCBWSVAgaW4gdGhlIGZvcm1hdCAqYHNlcnZpY2VfbmFtZS5tYXJhdGhvbi5sNGxiLnRoaXNkY29zLmRpcmVjdG9yeTpwb3J0YCouIENoZWNrIHN0YXR1cyBvZiB0aGUgVklQIGluIHRoZSAqTmV0d29yayogdGFiIG9mIHRoZSBEQy9PUyBEYXNoYm9hcmQgKEVudGVycHJpc2UgREMvT1Mgb25seSkuXG5cbm5ldHdvcmtpbmcgLyAqZXh0ZXJuYWxfYWNjZXNzKjogY3JlYXRlIGFuIGVudHJ5IGluIE1hcmF0aG9uLUxCIGZvciBhY2Nlc3NpbmcgdGhlIHNlcnZpY2UgZnJvbSBvdXRzaWRlIG9mIHRoZSBjbHVzdGVyXG5cbm5ldHdvcmtpbmcgLyAqZXh0ZXJuYWxfYWNjZXNzX3BvcnQqOiBwb3J0IHRvIGJlIHVzZWQgaW4gTWFyYXRob24tTEIgZm9yIGFjY2Vzc2luZyB0aGUgc2VydmljZS4iLCJwb3N0SW5zdGFsbE5vdGVzIjoiU2VydmljZSBpbnN0YWxsZWQuXG5cbkRlZmF1bHQgbG9naW46IGBhZG1pbmAvYHBhc3N3b3JkYC4gVGhpcyB1c2VybmFtZS9wYXNzd29yZCBjb21iaW5hdGlvbiBvbmx5IGFwcGxpZXMgaWYgeW91IGhhdmVuJ3QgY2hhbmdlZCB0aGUgZGVmYXVsdHMuIiwicG9zdFVuaW5zdGFsbE5vdGVzIjoiU2VydmljZSB1bmluc3RhbGxlZC4gTm90ZSB0aGF0IGFueSBwZXJzaXN0aW5nIGRhdGEgc3RpbGwgZXhpc3RzIGFuZCB3aWxsIG5lZWQgdG8gYmUgbWFudWFsbHkgcmVtb3ZlZC4iLCJsaWNlbnNlcyI6W3sibmFtZSI6IkdOVSBHRU5FUkFMIFBVQkxJQyBMSUNFTlNFIiwidXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL215c3FsL215c3FsLXNlcnZlci9ibG9iLzUuNy9DT1BZSU5HIn1dLCJpbWFnZXMiOnsiaWNvbi1zbWFsbCI6Imh0dHBzOi8vczMuYW1hem9uYXdzLmNvbS9kb3dubG9hZHMubWVzb3NwaGVyZS5pby91bml2ZXJzZS9hc3NldHMvaWNvbi1zZXJ2aWNlLW15c3FsLXNtYWxsLnBuZyIsImljb24tbWVkaXVtIjoiaHR0cHM6Ly9zMy5hbWF6b25hd3MuY29tL2Rvd25sb2Fkcy5tZXNvc3BoZXJlLmlvL3VuaXZlcnNlL2Fzc2V0cy9pY29uLXNlcnZpY2UtbXlzcWwtbWVkaXVtLmpwZyIsImljb24tbGFyZ2UiOiJodHRwczovL3MzLmFtYXpvbmF3cy5jb20vZG93bmxvYWRzLm1lc29zcGhlcmUuaW8vdW5pdmVyc2UvYXNzZXRzL2ljb24tc2VydmljZS1teXNxbC1sYXJnZS5qcGcifX0=",
+    "DCOS_PACKAGE_REGISTRY_VERSION": "3.0",
+    "DCOS_SERVICE_NAME": "mysql",
+    "DCOS_PACKAGE_VERSION": "5.7.12-0.3",
+    "DCOS_PACKAGE_NAME": "mysql",
+    "MARATHON_SINGLE_INSTANCE_APP": "true",
+    "DCOS_PACKAGE_IS_FRAMEWORK": "false"
+  },
+  "env": {
+    "MYSQL_CONTEXT": "/service/mysql",
+    "MYSQL_DATABASE": "defaultdb",
+    "MYSQL_PASSWORD": "password",
+    "MYSQL_USER": "admin",
+    "MYSQL_ROOT_PASSWORD": "root"
+  }
+}

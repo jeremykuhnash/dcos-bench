@@ -1,0 +1,10 @@
+{
+  "security": {
+    "secret-name": "jenkins/jenkins-secret",
+    "strict-mode": true
+  },
+  "service": {
+    "user": "nobody"
+  }
+}
+

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#set -o xtrace
+if [ -z "$ENV_DCOS_USER" ]
+  then
+    echo "Must set ENV_DCOS_USER environment variable."
+    exit 1
+fi
+
+if [ -z "$ENV_DCOS_PASSWORD" ]
+  then
+    echo "Must set ENV_DCOS_PASSWORD environment variable."
+    exit 1
+fi
+
+if [ -z "$ENV_URL" ]
+  then
+    echo "Must set ENV_URL environment variable."
+    exit 1
+  else
+    URL_CLEAN=${ENV_URL%/}
+    dcos config set core.dcos_url $URL_CLEAN
+    URL="${URL_CLEAN}/acs/api/v1/auth/login"
+    JSON="{\"uid\": \"${ENV_DCOS_USER}\", \"password\": \"${ENV_DCOS_PASSWORD}\"}"
+    echo "JSON: ${JSON}"
+    DCOS_AUTH_TOKEN=$(curl -k -s -X POST ${URL} -d "${JSON}" -H 'Content-Type: application/json' \
+      | grep token | cut -d ':' -f2 | cut -d '"' -f2
+    )
+    echo "Auth Token: $DCOS_AUTH_TOKEN"
+    dcos config set core.dcos_acs_token $DCOS_AUTH_TOKEN
+
+fi
+
+dcos node
+#dcos node ssh --option StrictHostKeyChecking=no --master-proxy --leader $NODE_USER
+#cd /root
+#/bin/bash
