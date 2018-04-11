@@ -1,0 +1,63 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+  # this is a test env, assumedly, so don't complicate with new SSH keys...
+  config.ssh.insert_key = false
+  config.vm.define "bootstrap" do |bootstrap|
+#    bootstrap.vm.box = "box-cutter/ol73"
+    bootstrap.vm.box = "jeremykuhnash/oel73_3.10"
+    bootstrap.vm.synced_folder "~/Downloads", "/downloads"
+#    bootstrap.vm.provision "file", source: "~/Downloads/dcos_generate_config.ee.sh", destination: "/home/vagrant/dcos_generate_config.ee.sh"
+    bootstrap.vm.network :private_network, ip: "192.168.56.100"
+    bootstrap.vm.provider "virtualbox" do |vb|
+      vb.memory = "768"
+      vb.cpus = "1"
+      vb.customize ["modifyvm", :id, "--name", "bootstrap"]
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    end
+    bootstrap.vm.provision "shell", path: "bootstrap.sh"
+  end
+
+  config.vm.define "dcosmaster" do |dcosmaster|
+    dcosmaster.vm.box = "jeremykuhnash/oel73_3.10"
+    dcosmaster.vm.network :private_network, ip: "192.168.56.101"
+    dcosmaster.vm.network "forwarded_port", guest: 443, host: 1443
+    dcosmaster.vm.network "forwarded_port", guest: 8080, host: 8080
+    dcosmaster.vm.provider "virtualbox" do |vb|
+      vb.memory = "6400"
+      vb.cpus = "2"
+      vb.customize ["modifyvm", :id, "--name", "dcosmaster"]
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    end
+#    dcosmaster.vm.provision "shell", path: "setup_sdb_mounts.sh"
+    dcosmaster.vm.provision "shell", path: "master.sh"
+  end
+
+  config.vm.define "dcosprivate" do |dcosprivate|
+    dcosprivate.vm.box = "jeremykuhnash/oel73_3.10"
+    dcosprivate.vm.network :private_network, ip: "192.168.56.102"
+    dcosprivate.vm.provider "virtualbox" do |vb|
+      vb.memory = "8192"
+      vb.cpus = "6"
+      vb.customize ["modifyvm", :id, "--name", "dcosprivate"]
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    end
+#    dcosprivate.vm.provision "shell", path: "setup_sdb_mounts.sh"
+    dcosprivate.vm.provision "shell", path: "private.sh"
+  end
+
+  config.vm.define "dcospublic" do |dcospublic|
+    dcospublic.vm.box = "jeremykuhnash/oel73_3.10"
+    dcospublic.vm.network :private_network, ip: "192.168.56.103"
+    dcospublic.vm.network "forwarded_port", guest: 9090, host: 9090
+    dcospublic.vm.provider "virtualbox" do |vb|
+      vb.memory = "1600"
+      vb.cpus = "3"
+      vb.customize ["modifyvm", :id, "--name", "dcospublic"]
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    end
+#    dcosprivate.vm.provision "shell", path: "setup_sdb_mounts.sh"
+    dcospublic.vm.provision "shell", path: "public.sh"
+  end
+
+end

@@ -1,0 +1,20 @@
+bootstrap_url: http://192.168.56.100:80
+cluster_name: 'DCOS-VAGRANT'
+customer_key: 4f03f0ec-5632-7982-ab82-0d17244c2b1e
+exhibitor_storage_backend: static
+master_discovery: static
+master_list:
+- 192.168.56.101
+resolvers:
+- 10.0.2.3
+# Choose your security mode: permissive, strict, or disabled
+security: permissive
+superuser_password_hash: $6$rounds=656000$ValyH0mrbo8KoAhR$sd.45bahgDxzwV2WIJy0vUcxa4KPQbXKBLdzU8BA87tova2Jy6bDqtL5BMCgMeJjDa4zURK/Wes61VaoO.hnf/
+superuser_username: admin
+use_proxy: 'false'
+telemetry_enabled: 'false'
+dcos_overlay_enable: 'false'
+log_directory: /genconf/logs
+mesos_dns_ip_sources:
+ - netinfo
+ - host
