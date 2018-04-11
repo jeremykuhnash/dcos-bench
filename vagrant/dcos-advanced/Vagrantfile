@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
     bootstrap.vm.box = "jeremykuhnash/oel73_3.10"
     bootstrap.vm.synced_folder "~/Downloads", "/downloads"
 #    bootstrap.vm.provision "file", source: "~/Downloads/dcos_generate_config.ee.sh", destination: "/home/vagrant/dcos_generate_config.ee.sh"
-    bootstrap.vm.network :private_network, ip: "192.168.56.100"
+    bootstrap.vm.network :private_network, ip: "192.168.56.100", virtualbox__intnet: true
     bootstrap.vm.provider "virtualbox" do |vb|
       vb.memory = "768"
       vb.cpus = "1"
@@ -20,12 +20,12 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "dcosmaster" do |dcosmaster|
     dcosmaster.vm.box = "jeremykuhnash/oel73_3.10"
-    dcosmaster.vm.network :private_network, ip: "192.168.56.101"
+    dcosmaster.vm.network :private_network, ip: "192.168.56.101", virtualbox__intnet: true
     dcosmaster.vm.network "forwarded_port", guest: 443, host: 1443
     dcosmaster.vm.network "forwarded_port", guest: 8080, host: 8080
     dcosmaster.vm.provider "virtualbox" do |vb|
-      vb.memory = "6400"
-      vb.cpus = "2"
+      vb.memory = "5400"
+      vb.cpus = "1"
       vb.customize ["modifyvm", :id, "--name", "dcosmaster"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     end
@@ -35,10 +35,10 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "dcosprivate" do |dcosprivate|
     dcosprivate.vm.box = "jeremykuhnash/oel73_3.10"
-    dcosprivate.vm.network :private_network, ip: "192.168.56.102"
+    dcosprivate.vm.network :private_network, ip: "192.168.56.102", virtualbox__intnet: true
     dcosprivate.vm.provider "virtualbox" do |vb|
       vb.memory = "8192"
-      vb.cpus = "6"
+      vb.cpus = "2"
       vb.customize ["modifyvm", :id, "--name", "dcosprivate"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     end
@@ -48,11 +48,13 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "dcospublic" do |dcospublic|
     dcospublic.vm.box = "jeremykuhnash/oel73_3.10"
-    dcospublic.vm.network :private_network, ip: "192.168.56.103"
+    dcospublic.vm.network :private_network, ip: "192.168.56.103", virtualbox__intnet: true
     dcospublic.vm.network "forwarded_port", guest: 9090, host: 9090
+    dcospublic.vm.network "forwarded_port", guest: 80, host: 8000
+    dcospublic.vm.network "forwarded_port", guest: 443, host: 8443
     dcospublic.vm.provider "virtualbox" do |vb|
-      vb.memory = "1600"
-      vb.cpus = "3"
+      vb.memory = "1024"
+      vb.cpus = "2"
       vb.customize ["modifyvm", :id, "--name", "dcospublic"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     end

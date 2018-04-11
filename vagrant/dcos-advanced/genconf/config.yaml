@@ -6,11 +6,12 @@ master_discovery: static
 master_list:
 - 192.168.56.101
 resolvers:
-- 10.0.2.3
+- 8.8.8.8
 # Choose your security mode: permissive, strict, or disabled
 security: permissive
-superuser_password_hash: $6$rounds=656000$ValyH0mrbo8KoAhR$sd.45bahgDxzwV2WIJy0vUcxa4KPQbXKBLdzU8BA87tova2Jy6bDqtL5BMCgMeJjDa4zURK/Wes61VaoO.hnf/
-superuser_username: admin
+# password is Bam456Bam
+superuser_password_hash: $6$rounds=656000$Ws6LBsL6SOmNWb8v$3ZrVQVHkXRNFDGY9AU/XpvaCy4NB543rudxx3LaBcW1R.f1vkHOEoQHl2W9wSCgA.dMDclWYam6..mOZd7ct30
+superuser_username: console
 use_proxy: 'false'
 telemetry_enabled: 'false'
 dcos_overlay_enable: 'false'
