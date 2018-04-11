@@ -56,9 +56,7 @@
   },
   "labels": {
     "HAPROXY_GROUP": "external",
-    "HAPROXY_0_VHOST": "tracer.external.example.com",
-    "HAPROXY_0_PATH": "/",
-    "HAPROXY_0_HTTP_BACKEND_PROXYPASS_PATH": "/grafana"
+    "HAPROXY_0_VHOST": "tracer.external.example.com"
   },
   "acceptedResourceRoles": null,
   "residency": null,
