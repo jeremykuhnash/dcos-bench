@@ -1,13 +1,14 @@
 #!/bin/bash
 set -e
 
-export BENCH_TOOLS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-export CCM_PEM=$(ls -latr1 ~/Downloads/jkuhnash-* | tail -1)
-echo "PEM file: ${CCM_PEM}"
-chmod 600 $CCM_PEM   # this fixes keys that are downloaded from CCM
-killall ssh-agent
-ssh-agent
-ssh-add $CCM_PEM
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+BENCH_TOOLS_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+echo "Tools Dir: $BENCH_TOOLS_DIR"
 rm -fR ~/.dcos/clusters/
 if [ -z "$CCM_USER" ] || [ -z "$CCM_PASSWORD" ]; then
     echo "Please set both CCM_USER and CCM_PASSWORD in your environment using export or set."
