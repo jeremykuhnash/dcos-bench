@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+#set -e
 
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -9,12 +9,14 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 BENCH_TOOLS_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 echo "Tools Dir: $BENCH_TOOLS_DIR"
+# The below seems to be fixed in versions after 0.4.5
 rm -fR ~/.dcos/clusters/
 if [ -z "$CCM_USER" ] || [ -z "$CCM_PASSWORD" ]; then
     echo "Please set both CCM_USER and CCM_PASSWORD in your environment using export or set."
     exit 1
 fi
 dcos cluster setup $1 --insecure  --username=${CCM_USER} --password=${CCM_PASSWORD}
+dcos package install --cli dcos-enterprise-cli --yes
 export PUBLIC_AGENT="$(${BENCH_TOOLS_DIR}/get_public_ip.sh)"
 echo "Public Agent: $PUBLIC_AGENT"
 #dcos node ssh --master-proxy --leader
